@@ -30,7 +30,7 @@
     ]
   },
   "dependencies": {
-    "@doc.ai/neuron-app": "^1.14.0",
+    "@doc.ai/neuron-app": "^1.14.1",
     "ajv": "^5.5.0",
     "base64-img": "1.0.3",
     "he": "^1.1.1",
