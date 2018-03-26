@@ -1,0 +1,43 @@
+{
+  "name": "@doc-ai/nrn-app-labcorp",
+  "private": true,
+  "version": "0.0.1",
+  "description": "LabCorp app for Neuron",
+  "main": "lib/index.js",
+  "repository": "git@github.com:doc-ai/nrn-app-labcorp.git",
+  "license": "Apache-2.0",
+  "author": "doc.ai Team <dev@doc.ai>",
+  "contributors": [
+    {
+      "name": "node-neuron-app contributors",
+      "url": "https://github.com/doc-ai/nrn-app-labcorp/graphs/contributors"
+    }
+  ],
+  "scripts": {
+    "build": "neuron-app build",
+    "dev": "neuron-app dev",
+    "lint": "neuron-app lint",
+    "start": "neuron-app start",
+    "prettier": "neuron-app prettier",
+    "test": "echo 'No tests yet'",
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.js": ["yarn prettier", "yarn lint --fix", "git add"]
+  },
+  "dependencies": {
+    "@doc.ai/neuron-app": "^1.13.1",
+    "ajv": "^5.5.0",
+    "base64-img": "1.0.3",
+    "he": "^1.1.1",
+    "lodash": "^4.17.4",
+    "moment": "^2.19.1",
+    "request": "^2.83.0",
+    "request-promise-native": "^1.0.5",
+    "tough-cookie": "^2.3.3"
+  },
+  "devDependencies": {
+    "husky": "^0.14.3",
+    "lint-staged": "^4.3.0"
+  }
+}

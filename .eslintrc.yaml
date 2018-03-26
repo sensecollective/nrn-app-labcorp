@@ -1,0 +1,1 @@
+extends: '@doc.ai/eslint-config-neuron'

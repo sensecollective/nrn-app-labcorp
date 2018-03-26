@@ -1,0 +1,347 @@
+{
+  "type": "object",
+  "properties": {
+    "oktaUser": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "passwordChanged": {
+              "type": "string"
+            },
+            "profile": {
+              "type": "object",
+              "properties": {
+                "login": {
+                  "type": "string"
+                },
+                "firstName": {
+                  "type": "string"
+                },
+                "lastName": {
+                  "type": "string"
+                },
+                "locale": {
+                  "type": "string"
+                },
+                "timeZone": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "login",
+                "firstName",
+                "lastName",
+                "locale",
+                "timeZone"
+              ]
+            }
+          },
+          "required": ["id", "passwordChanged", "profile"]
+        }
+      },
+      "required": ["user"]
+    },
+    "labCorpUser": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "middleName": {
+          "type": ["string", "null"]
+        },
+        "dateOfBirth": {
+          "type": "string"
+        },
+        "gender": {
+          "type": "string"
+        },
+        "race": {
+          "type": "string"
+        },
+        "ethnicity": {
+          "type": "string"
+        },
+        "socialSecurityNumber": {
+          "type": "string"
+        },
+        "profileVerificationDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "showTwoHourMessage": {
+          "type": "boolean"
+        },
+        "authenticationQuizStatus": {
+          "type": "string"
+        },
+        "clinicalTrialsPreferenceStatus": {
+          "type": "string"
+        },
+        "hasFailedMaxVerificationAttempts": {
+          "type": "boolean"
+        },
+        "dependents": {
+          "type": "array"
+        },
+        "notificationPreferences": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "notificationType": {
+                "type": "string"
+              },
+              "isEmailEnabled": {
+                "type": "boolean"
+              },
+              "isTextEnabled": {
+                "type": "boolean"
+              }
+            },
+            "required": ["notificationType", "isEmailEnabled", "isTextEnabled"]
+          }
+        },
+        "addresses": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "line1": {
+                "type": "string"
+              },
+              "line2": {
+                "type": ["string", "null"]
+              },
+              "city": {
+                "type": "string"
+              },
+              "state": {
+                "type": "string"
+              },
+              "zipCode": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              },
+              "isPrimary": {
+                "type": "boolean"
+              },
+              "lastUpdated": {
+                "type": "string",
+                "format": "date-time"
+              }
+            },
+            "required": [
+              "id",
+              "line1",
+              "line2",
+              "city",
+              "state",
+              "zipCode",
+              "type",
+              "isPrimary",
+              "lastUpdated"
+            ]
+          }
+        },
+        "phones": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "type": {
+                "type": "string"
+              },
+              "number": {
+                "type": "string"
+              },
+              "isPrimary": {
+                "type": "boolean"
+              },
+              "lastUpdated": {
+                "type": "string",
+                "format": "date-time"
+              }
+            },
+            "requred": ["id", "type", "number", "isPrimary", "lastUpdated"]
+          }
+        },
+        "emailAddresses": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "address": {
+                "type": "string"
+              },
+              "isPrimary": {
+                "type": "boolean"
+              },
+              "lastUpdated": {
+                "type": "string",
+                "format": "date-time"
+              }
+            },
+            "required": ["id", "address", "isPrimary", "lastUpdated"]
+          }
+        }
+      },
+      "required": [
+        "id",
+        "firstName",
+        "lastName",
+        "middleName",
+        "dateOfBirth",
+        "gender",
+        "race",
+        "ethnicity",
+        "socialSecurityNumber",
+        "notificationPreferences",
+        "profileVerificationDate",
+        "showTwoHourMessage",
+        "authenticationQuizStatus",
+        "clinicalTrialsPreferenceStatus",
+        "hasFailedMaxVerificationAttempts",
+        "dependents",
+        "addresses",
+        "phones",
+        "emailAddresses"
+      ]
+    },
+    "results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "header": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "accountName": {
+                "type": "string"
+              },
+              "orderingProviderName": {
+                "type": "string"
+              },
+              "dateOfService": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "reportDate": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "dashboardCategory": {
+                "type": "string"
+              },
+              "isDetailAvailable": {
+                "type": "boolean"
+              },
+              "hasMinimumDataForPdfRetrieval": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "id",
+              "accountName",
+              "orderingProviderName",
+              "dateOfService",
+              "reportDate",
+              "dashboardCategory",
+              "isDetailAvailable",
+              "hasMinimumDataForPdfRetrieval"
+            ]
+          },
+          "orderedItems": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "testName": {
+                  "type": "string"
+                },
+                "results": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "value": {
+                        "type": ["string", "null"]
+                      },
+                      "abnormalIndicator": {
+                        "type": ["string", "null"]
+                      },
+                      "referenceRange": {
+                        "type": ["string", "null"]
+                      },
+                      "units": {
+                        "type": ["string", "null"]
+                      },
+                      "status": {
+                        "type": "string"
+                      },
+                      "comments": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string"
+                            },
+                            "text": {
+                              "type": "string"
+                            }
+                          },
+                          "required": ["type", "text"]
+                        }
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "value",
+                      "abnormalIndicator",
+                      "referenceRange",
+                      "units",
+                      "status",
+                      "comments"
+                    ]
+                  }
+                }
+              },
+              "required": ["testName", "results"]
+            }
+          }
+        },
+        "required": ["header", "orderedItems"]
+      }
+    }
+  },
+  "required": ["oktaUser", "labCorpUser", "results"]
+}
