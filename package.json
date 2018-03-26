@@ -23,10 +23,14 @@
     "precommit": "lint-staged"
   },
   "lint-staged": {
-    "*.js": ["yarn prettier", "yarn lint --fix", "git add"]
+    "*.js": [
+      "yarn prettier",
+      "yarn lint --fix",
+      "git add"
+    ]
   },
   "dependencies": {
-    "@doc.ai/neuron-app": "^1.13.1",
+    "@doc.ai/neuron-app": "^1.14.0",
     "ajv": "^5.5.0",
     "base64-img": "1.0.3",
     "he": "^1.1.1",
