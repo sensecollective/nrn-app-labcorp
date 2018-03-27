@@ -20,6 +20,7 @@ env:
   - DOCAI_NEURON_KUBERNETES_ZONE_alpha="us-central1-a"
   - DOCAI_NEURON_KUBERNETES_ZONE_develop="us-central1-a"
 before_install:
+- gcloud components install kubectl
 - openssl aes-256-cbc -K $encrypted_2495856d1344_key -iv $encrypted_2495856d1344_iv -in secrets.tar.enc -out secrets.tar -d
 - tar xvf secrets.tar
 before_script:
