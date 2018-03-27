@@ -33,12 +33,7 @@ script:
 - docker tag docai/$PROJECT:$COMMIT docai/$PROJECT:travis-$TRAVIS_BUILD_NUMBER
 deploy:
   provider: script
-  script:
-  - docker push docai/$PROJECT
-  - gcloud auth activate-service-account --key-file=$SERVICE_ACCOUNT_FILENAME
-  - gcloud container clusters get-credentials $CLUSTER_NAME --zone $CLUSTER_ZONE --project
-    CLUSTER_PROJECT
-  - kubectl set image deployment/$PROJECT $PROJECT=docai/$PROJECT:travis-$TRAVIS_BUILD_NUMBER
+  script: bash scripts/deploy.sh $SERVICE_ACCOUNT_FILENAME $PROJECT $CLUSTER_NAME $CLUSTER_ZONE travis-$TRAVIS_BUILD_NUMBER
 branches:
   only:
   - master
