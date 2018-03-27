@@ -10,6 +10,9 @@ env:
   - DOCAI_NEURON_KUBERNETES_SERVICE_ACCOUNT_master="svc-acc-prod.json"
   - DOCAI_NEURON_KUBERNETES_SERVICE_ACCOUNT_alpha="svc-acc-alpha.json"
   - DOCAI_NEURON_KUBERNETES_SERVICE_ACCOUNT_develop="svc-acc-dev.json"
+  - DOCAI_NEURON_KUBERNETES_CLUSTER_PROJECT_master="neuron-prod"
+  - DOCAI_NEURON_KUBERNETES_CLUSTER_PROJECT_alpha="neuron-alpha"
+  - DOCAI_NEURON_KUBERNETES_CLUSTER_PROJECT_develop="docai-neuron-dev"
   - DOCAI_NEURON_KUBERNETES_CLUSTER_NAME_master="prod-cluster"
   - DOCAI_NEURON_KUBERNETES_CLUSTER_NAME_alpha="alpha-cluster"
   - DOCAI_NEURON_KUBERNETES_CLUSTER_NAME_develop="dev-cluster"
@@ -34,7 +37,7 @@ script:
 deploy:
   skip_cleanup: true
   provider: script
-  script: bash scripts/deploy.sh $SERVICE_ACCOUNT_FILENAME $PROJECT $CLUSTER_NAME $CLUSTER_ZONE travis-$TRAVIS_BUILD_NUMBER
+  script: bash scripts/deploy.sh $SERVICE_ACCOUNT_FILENAME $PROJECT $CLUSTER_PROJECT $CLUSTER_NAME $CLUSTER_ZONE travis-$TRAVIS_BUILD_NUMBER
 branches:
   only:
   - master
