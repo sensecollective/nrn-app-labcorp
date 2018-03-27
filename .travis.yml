@@ -8,7 +8,7 @@ env:
   - COMMIT=${TRAVIS_COMMIT::8}
   - REPO="docai/nrn-app-labcorp"
 before_script:
-- docker login -u "$DOCKER_USER" -p "$DOCKER_PASSWORD"
+- docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
 - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
 script:
 - docker build -f Dockerfile -t $REPO:$COMMIT .
