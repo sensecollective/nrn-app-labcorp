@@ -16,6 +16,10 @@ env:
 before_script:
 - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
 - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
+- export SERVICE_ACCOUNT=$(eval echo "\${DOCAI_NEURON_SERVICE_ACCOUNT_$TRAVIS_BRANCH}")
+- export CLUSTER_NAME=$(eval echo "\${DOCAI_NEURON_KUBERNETES_CLUSTER_NAME_$TRAVIS_BRANCH}")
+- export CLUSTER_ZONE=$(eval echo "\${DOCAI_NEURON_KUBERNETES_ZONE_$TRAVIS_BRANCH}")
+- export CLUSTER_PROJECT=$(eval echo "\${DOCAI_NEURON_KUBERNETES_PROJECT_$TRAVIS_BRANCH}")
 script:
 - docker build -f Dockerfile -t docai/$PROJECT:$COMMIT .
 - docker tag docai/$PROJECT:$COMMIT docai/$PROJECT:$TAG
@@ -24,10 +28,10 @@ deploy:
   provider: script
   script:
   - docker push docai/$PROJECT
-  - echo $(eval echo "\${DOCAI_NEURON_SERVICE_ACCOUNT_$TRAVIS_BRANCH}") > /tmp/auth.json
+  - echo $SERVICE_ACCOUNT > /tmp/auth.json
   - gcloud auth activate-service-account --key-file=/tmp/auth.json
-  - gcloud container clusters get-credentials $(eval echo "\${DOCAI_NEURON_KUBERNETES_CLUSTER_NAME_$TRAVIS_BRANCH}") --zone $(eval echo "\${DOCAI_NEURON_KUBERNETES_ZONE_$TRAVIS_BRANCH}") --project $(eval echo "\${DOCAI_NEURON_KUBERNETES_PROJECT_$TRAVIS_BRANCH}")
-  - kubectl set image deployment/$PROJECT $PROJECT=`cat /tmp/workspace/image`
+  - gcloud container clusters get-credentials $CLUSTER_NAME --zone $CLUSTER_ZONE --project CLUSTER_PROJECT
+  - kubectl set image deployment/$PROJECT $PROJECT=docai/$PROJECT:travis-$TRAVIS_BUILD_NUMBER
 branches:
   only:
   - master
