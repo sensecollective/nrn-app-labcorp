@@ -23,7 +23,7 @@ before_script:
 - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
 - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH
   ; fi`
-- export SERVICE_ACCOUNT_FILENAME=$(pwd)/$(eval echo "\${DOCAI_NEURON_KUBERNETES_SERVICE_ACCOUNT_$TRAVIS_BRANCH}")
+- export SERVICE_ACCOUNT_FILENAME=$(eval echo "\${DOCAI_NEURON_KUBERNETES_SERVICE_ACCOUNT_$TRAVIS_BRANCH}")
 - export CLUSTER_NAME=$(eval echo "\${DOCAI_NEURON_KUBERNETES_CLUSTER_NAME_$TRAVIS_BRANCH}")
 - export CLUSTER_ZONE=$(eval echo "\${DOCAI_NEURON_KUBERNETES_ZONE_$TRAVIS_BRANCH}")
 - export CLUSTER_PROJECT=$(eval echo "\${DOCAI_NEURON_KUBERNETES_PROJECT_$TRAVIS_BRANCH}")
@@ -32,6 +32,7 @@ script:
 - docker tag docai/$PROJECT:$COMMIT docai/$PROJECT:$TAG
 - docker tag docai/$PROJECT:$COMMIT docai/$PROJECT:travis-$TRAVIS_BUILD_NUMBER
 deploy:
+  skip_cleanup: true
   provider: script
   script: bash scripts/deploy.sh $SERVICE_ACCOUNT_FILENAME $PROJECT $CLUSTER_NAME $CLUSTER_ZONE travis-$TRAVIS_BUILD_NUMBER
 branches:
