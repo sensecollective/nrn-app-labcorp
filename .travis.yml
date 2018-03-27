@@ -7,16 +7,27 @@ env:
   - secure: mAQKMxSAeUKdUxVoEApgIheWw74gfQjBFrxeWhM+JMLiR4A3zHj7+8bLAltEewS8j4pfQelNCEcnoR+ARcsxFtCCmFj3pu+B38VfzttmDHH5d/MLrGG1MjwKeTWlXI6AfqTA5XBNh712qfvoeGD/D61fTYgF0qs3d+xWFOz6p9u88Z7NNS8MI8uFXcZD7G3vmkjoGkhUPB2U6X/ihFSgcmsr0GzkqfnZJ5kB2fOIzgarR9STS2rfCsSTDl/Tjo7XPzhqDosNTXYkYJm96ORogI2lCE5xJY4aQhqKT0vsBWa8uB0mU1mZRl0v9ZkfBYLhwMH4dme1HnlO12aoWoJP/VC11WWwI3/8Cg12p4MMBTAncXL/dOao48A+Pb6duGlnyRqgZzF0HXwfkrRfhDtshRSHwBWrDNbcxX1GoFJIgZaFUhu4pi+Ex3s+fGZcT1zJInjPDqfpLFzH7m1sKt2ll/OaxBbiqj9zcHBtU3PI1r66CBcxt0Ijn3cTICnP8PTLNRE3CG0JCYuYQC8vjtPlfn0poytcWkN/ENJrhr7vF2iUqZGIWQy/kYFeOsEdewLu78/Z5a962CQCxBKWyxV36ZruzVYdihEJIm9kjxYJd1ThYaqlR44xalgMFC1Dyts6Gbn6hOLFDR8gx33qfBOdWFJSYsnf8YlucRnbF0dzvUs
   - COMMIT=${TRAVIS_COMMIT::8}
   - PROJECT="nrn-app-labcorp"
+  - DOCAI_NEURON_KUBERNETES_SERVICE_ACCOUNT_master="svc-acc-prod.json"
+  - DOCAI_NEURON_KUBERNETES_SERVICE_ACCOUNT_alpha="svc-acc-alpha.json"
+  - DOCAI_NEURON_KUBERNETES_SERVICE_ACCOUNT_develop="svc-acc-dev.json"
   - DOCAI_NEURON_KUBERNETES_CLUSTER_NAME_master="prod-cluster"
   - DOCAI_NEURON_KUBERNETES_CLUSTER_NAME_alpha="alpha-cluster"
   - DOCAI_NEURON_KUBERNETES_CLUSTER_NAME_develop="dev-cluster"
   - DOCAI_NEURON_KUBERNETES_ZONE_master="us-central1-a"
   - DOCAI_NEURON_KUBERNETES_ZONE_alpha="us-central1-a"
   - DOCAI_NEURON_KUBERNETES_ZONE_develop="us-central1-a"
+before_install:
+- openssl aes-256-cbc -K $encrypted_2495856d1344_key -iv $encrypted_2495856d1344_iv
+  -in svc-acc-prod.json.enc -out svc-acc-prod.json -d
+- openssl aes-256-cbc -K $encrypted_2495856d1344_key -iv $encrypted_2495856d1344_iv
+  -in svc-acc-alpha.json.enc -out svc-acc-alpha.json -d
+- openssl aes-256-cbc -K $encrypted_2495856d1344_key -iv $encrypted_2495856d1344_iv
+  -in svc-acc-dev.json.enc -out svc-acc-dev.json -d
 before_script:
 - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
-- export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
-- export SERVICE_ACCOUNT=$(eval echo "\${DOCAI_NEURON_SERVICE_ACCOUNT_$TRAVIS_BRANCH}")
+- export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH
+  ; fi`
+- export SERVICE_ACCOUNT_FILENAME=$(eval echo "\${DOCAI_NEURON_KUBERNETES_SERVICE_ACCOUNT_$TRAVIS_BRANCH}")
 - export CLUSTER_NAME=$(eval echo "\${DOCAI_NEURON_KUBERNETES_CLUSTER_NAME_$TRAVIS_BRANCH}")
 - export CLUSTER_ZONE=$(eval echo "\${DOCAI_NEURON_KUBERNETES_ZONE_$TRAVIS_BRANCH}")
 - export CLUSTER_PROJECT=$(eval echo "\${DOCAI_NEURON_KUBERNETES_PROJECT_$TRAVIS_BRANCH}")
@@ -28,9 +39,9 @@ deploy:
   provider: script
   script:
   - docker push docai/$PROJECT
-  - echo $SERVICE_ACCOUNT > /tmp/auth.json
-  - gcloud auth activate-service-account --key-file=/tmp/auth.json
-  - gcloud container clusters get-credentials $CLUSTER_NAME --zone $CLUSTER_ZONE --project CLUSTER_PROJECT
+  - gcloud auth activate-service-account --key-file=$SERVICE_ACCOUNT_FILENAME
+  - gcloud container clusters get-credentials $CLUSTER_NAME --zone $CLUSTER_ZONE --project
+    CLUSTER_PROJECT
   - kubectl set image deployment/$PROJECT $PROJECT=docai/$PROJECT:travis-$TRAVIS_BUILD_NUMBER
 branches:
   only:
