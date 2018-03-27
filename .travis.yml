@@ -6,13 +6,30 @@ env:
   - secure: Xsn5ZXfD7q2i0+cM6CObDkfv7OmhtI6SnNl89CR4YevCK7FhGHaaehK817tHWV8EK1RuMMle4qQ4fbjQEixsajDTid+tqgxhkYAjDLUDSVQta/Mi/G0lOOQInX1xi9EeDHsMgKnmL66zkVfAZR+pv1hMIRx5oYoHK9VC7WWH8yIlRLH3kCUP+ScEonYfzMdYg2KDxKUzH+mI5zmXE2xY03Phgbc4injwz52DZwyFYGy+K/oGK6G/vw5JRFMn4Lx7AlTbDu5fh4NzVUq45x7uRVDv8JdgJIdtibAV2KcNpoHvlfoDErQgVtzGLYHVfr7ul3pp3aANX0hIfkXkzYNwAXj5igA0oz5L49LUoq5/MQbGOOIav+dj6qwoiOxtsqCPgvn/advSphoab9ECx4BkLLmpJ8VNTt/F6k1PqSx8348KfCSoxAiN7Ib+Trdi/66eG+QPPtFUuWoiEng7P5EbjA2YgNSEjGlIAvDXJD5x2xLa97poS2QFsqkFTzxFYRWTwGaOiNIuAjlBdFcNeiDB6aECt4HazQyntzLLykAjzN6CRv8qvZXBJ2wCCNePgHeCo1GWuuz1/8SKMLT+nxreD4NxYGkjUvpqkLEP3n/hTpwIQkxV1CGCYrsSWlArCEyyQwXIVr37CjMWG0vtjiNmhAWLe4ylBO3tBpSxJ1AI41E=
   - secure: mAQKMxSAeUKdUxVoEApgIheWw74gfQjBFrxeWhM+JMLiR4A3zHj7+8bLAltEewS8j4pfQelNCEcnoR+ARcsxFtCCmFj3pu+B38VfzttmDHH5d/MLrGG1MjwKeTWlXI6AfqTA5XBNh712qfvoeGD/D61fTYgF0qs3d+xWFOz6p9u88Z7NNS8MI8uFXcZD7G3vmkjoGkhUPB2U6X/ihFSgcmsr0GzkqfnZJ5kB2fOIzgarR9STS2rfCsSTDl/Tjo7XPzhqDosNTXYkYJm96ORogI2lCE5xJY4aQhqKT0vsBWa8uB0mU1mZRl0v9ZkfBYLhwMH4dme1HnlO12aoWoJP/VC11WWwI3/8Cg12p4MMBTAncXL/dOao48A+Pb6duGlnyRqgZzF0HXwfkrRfhDtshRSHwBWrDNbcxX1GoFJIgZaFUhu4pi+Ex3s+fGZcT1zJInjPDqfpLFzH7m1sKt2ll/OaxBbiqj9zcHBtU3PI1r66CBcxt0Ijn3cTICnP8PTLNRE3CG0JCYuYQC8vjtPlfn0poytcWkN/ENJrhr7vF2iUqZGIWQy/kYFeOsEdewLu78/Z5a962CQCxBKWyxV36ZruzVYdihEJIm9kjxYJd1ThYaqlR44xalgMFC1Dyts6Gbn6hOLFDR8gx33qfBOdWFJSYsnf8YlucRnbF0dzvUs
   - COMMIT=${TRAVIS_COMMIT::8}
-  - REPO="docai/nrn-app-labcorp"
+  - PROJECT="nrn-app-labcorp"
+  - DOCAI_NEURON_KUBERNETES_CLUSTER_NAME_master="prod-cluster"
+  - DOCAI_NEURON_KUBERNETES_CLUSTER_NAME_alpha="alpha-cluster"
+  - DOCAI_NEURON_KUBERNETES_CLUSTER_NAME_develop="dev-cluster"
+  - DOCAI_NEURON_KUBERNETES_ZONE_master="us-central1-a"
+  - DOCAI_NEURON_KUBERNETES_ZONE_alpha="us-central1-a"
+  - DOCAI_NEURON_KUBERNETES_ZONE_develop="us-central1-a"
 before_script:
 - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
 - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
 script:
-- docker build -f Dockerfile -t $REPO:$COMMIT .
-- docker tag $REPO:$COMMIT $REPO:$TAG
-- docker tag $REPO:$COMMIT $REPO:travis-$TRAVIS_BUILD_NUMBER
-after_success:
-- docker push $REPO
+- docker build -f Dockerfile -t docai/$PROJECT:$COMMIT .
+- docker tag docai/$PROJECT:$COMMIT docai/$PROJECT:$TAG
+- docker tag docai/$PROJECT:$COMMIT docai/$PROJECT:travis-$TRAVIS_BUILD_NUMBER
+deploy:
+  provider: script
+  script:
+  - docker push docai/$PROJECT
+  - echo $(eval echo "\${DOCAI_NEURON_SERVICE_ACCOUNT_$TRAVIS_BRANCH}") > /tmp/auth.json
+  - gcloud auth activate-service-account --key-file=/tmp/auth.json
+  - gcloud container clusters get-credentials $(eval echo "\${DOCAI_NEURON_KUBERNETES_CLUSTER_NAME_$TRAVIS_BRANCH}") --zone $(eval echo "\${DOCAI_NEURON_KUBERNETES_ZONE_$TRAVIS_BRANCH}") --project $(eval echo "\${DOCAI_NEURON_KUBERNETES_PROJECT_$TRAVIS_BRANCH}")
+  - kubectl set image deployment/$PROJECT $PROJECT=`cat /tmp/workspace/image`
+branches:
+  only:
+  - master
+  - alpha
+  - develop
