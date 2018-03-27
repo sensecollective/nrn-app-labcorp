@@ -1,5 +1,4 @@
 sudo: required
-language: node_js
 services:
 - docker
 env:
@@ -8,13 +7,12 @@ env:
   - secure: mAQKMxSAeUKdUxVoEApgIheWw74gfQjBFrxeWhM+JMLiR4A3zHj7+8bLAltEewS8j4pfQelNCEcnoR+ARcsxFtCCmFj3pu+B38VfzttmDHH5d/MLrGG1MjwKeTWlXI6AfqTA5XBNh712qfvoeGD/D61fTYgF0qs3d+xWFOz6p9u88Z7NNS8MI8uFXcZD7G3vmkjoGkhUPB2U6X/ihFSgcmsr0GzkqfnZJ5kB2fOIzgarR9STS2rfCsSTDl/Tjo7XPzhqDosNTXYkYJm96ORogI2lCE5xJY4aQhqKT0vsBWa8uB0mU1mZRl0v9ZkfBYLhwMH4dme1HnlO12aoWoJP/VC11WWwI3/8Cg12p4MMBTAncXL/dOao48A+Pb6duGlnyRqgZzF0HXwfkrRfhDtshRSHwBWrDNbcxX1GoFJIgZaFUhu4pi+Ex3s+fGZcT1zJInjPDqfpLFzH7m1sKt2ll/OaxBbiqj9zcHBtU3PI1r66CBcxt0Ijn3cTICnP8PTLNRE3CG0JCYuYQC8vjtPlfn0poytcWkN/ENJrhr7vF2iUqZGIWQy/kYFeOsEdewLu78/Z5a962CQCxBKWyxV36ZruzVYdihEJIm9kjxYJd1ThYaqlR44xalgMFC1Dyts6Gbn6hOLFDR8gx33qfBOdWFJSYsnf8YlucRnbF0dzvUs
   - COMMIT=${TRAVIS_COMMIT::8}
   - REPO="docai/nrn-app-labcorp"
-before_install:
-- docker build -t app .
-- docker tag app
-after_success:
+before_script:
 - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
 - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
+script:
 - docker build -f Dockerfile -t $REPO:$COMMIT .
 - docker tag $REPO:$COMMIT $REPO:$TAG
 - docker tag $REPO:$COMMIT $REPO:travis-$TRAVIS_BUILD_NUMBER
+after_success:
 - docker push $REPO
