@@ -60,4 +60,4 @@ typings/
 test-*
 lib
 
-svc-acc-*.json
+secrets.tar
