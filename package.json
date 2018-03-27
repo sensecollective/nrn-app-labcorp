@@ -1,5 +1,5 @@
 {
-  "name": "@doc-ai/nrn-app-labcorp",
+  "name": "ai.doc.neuron.app.labcorp",
   "private": true,
   "version": "0.0.1",
   "description": "LabCorp app for Neuron",
