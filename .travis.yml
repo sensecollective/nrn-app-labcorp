@@ -23,7 +23,8 @@ before_install:
 - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
 - chmod +x ./kubectl
 - sudo mv ./kubectl /usr/local/bin/kubectl
-- openssl aes-256-cbc -K $encrypted_2495856d1344_key -iv $encrypted_2495856d1344_iv -in secrets.tar.enc -out secrets.tar -d
+- openssl aes-256-cbc -K $encrypted_2495856d1344_key -iv $encrypted_2495856d1344_iv
+  -in secrets.tar.enc -out secrets.tar -d
 - tar xvf secrets.tar
 before_script:
 - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
@@ -40,7 +41,8 @@ script:
 deploy:
   skip_cleanup: true
   provider: script
-  script: bash scripts/deploy.sh $SERVICE_ACCOUNT_FILENAME $PROJECT $CLUSTER_PROJECT $CLUSTER_NAME $CLUSTER_ZONE travis-$TRAVIS_BUILD_NUMBER
+  script: bash scripts/deploy.sh $SERVICE_ACCOUNT_FILENAME $PROJECT $CLUSTER_PROJECT
+    $CLUSTER_NAME $CLUSTER_ZONE travis-$TRAVIS_BUILD_NUMBER
 branches:
   only:
   - master
