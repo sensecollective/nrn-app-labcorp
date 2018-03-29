@@ -39,12 +39,24 @@ script:
 - docker tag docai/$PROJECT:$COMMIT docai/$PROJECT:$TAG
 - docker tag docai/$PROJECT:$COMMIT docai/$PROJECT:travis-$TRAVIS_BUILD_NUMBER
 deploy:
-  skip_cleanup: true
+- skip_cleanup: true
   provider: script
-  script: bash scripts/deploy.sh $SERVICE_ACCOUNT_FILENAME $PROJECT $CLUSTER_PROJECT
-    $CLUSTER_NAME $CLUSTER_ZONE travis-$TRAVIS_BUILD_NUMBER
-branches:
-  only:
-  - master
-  - alpha
-  - develop
+  script: bash scripts/deploy.sh $DOCAI_NEURON_KUBERNETES_SERVICE_ACCOUNT_master $PROJECT
+    $DOCAI_NEURON_KUBERNETES_CLUSTER_PROJECT_master $DOCAI_NEURON_KUBERNETES_CLUSTER_NAME_master
+    $DOCAI_NEURON_KUBERNETES_ZONE_master travis-$TRAVIS_BUILD_NUMBER
+  on:
+    branch: master
+- skip_cleanup: true
+  provider: script
+  script: bash scripts/deploy.sh $DOCAI_NEURON_KUBERNETES_SERVICE_ACCOUNT_alpha $PROJECT
+    $DOCAI_NEURON_KUBERNETES_CLUSTER_PROJECT_alpha $DOCAI_NEURON_KUBERNETES_CLUSTER_NAME_alpha
+    $DOCAI_NEURON_KUBERNETES_ZONE_alpha travis-$TRAVIS_BUILD_NUMBER
+  on:
+    branch: alpha
+- skip_cleanup: true
+  provider: script
+  script: bash scripts/deploy.sh $DOCAI_NEURON_KUBERNETES_SERVICE_ACCOUNT_develop
+    $PROJECT $DOCAI_NEURON_KUBERNETES_CLUSTER_PROJECT_develop $DOCAI_NEURON_KUBERNETES_CLUSTER_NAME_develop
+    $DOCAI_NEURON_KUBERNETES_ZONE_develop travis-$TRAVIS_BUILD_NUMBER
+  on:
+    branch: develop

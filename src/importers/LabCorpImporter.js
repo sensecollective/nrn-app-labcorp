@@ -165,8 +165,6 @@ export default class LabCorpImporter extends Importer {
   }
 
   async loginPassAuthStage({ username, password }) {
-    await this.setStatus('Authentication... 0%');
-
     this.setState('jar', request.jar());
 
     try {
@@ -214,8 +212,6 @@ export default class LabCorpImporter extends Importer {
 
       throw new errors.CollectorAuthError(e.message);
     }
-
-    await this.setStatus('Authentication... 100%');
   }
 
   async collect() {
