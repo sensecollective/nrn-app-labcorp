@@ -6,7 +6,7 @@ async function main() {
     customConfig: {
       labCorp: {
         name: 'LabCorp',
-        groups: 'protenome',
+        groups: 'proteome',
       },
     },
   });
