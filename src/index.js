@@ -7,6 +7,7 @@ async function main() {
       labCorp: {
         name: 'LabCorp',
         groups: 'proteome',
+        category: 'proteome',
       },
     },
   });
